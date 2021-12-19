@@ -12,3 +12,4 @@ Utility library that explores Go generics (1.18)
 ## collection
     
 + [Option[T]](collection/option.go)
++ [Expected[T, E]](collection/expected.go)
