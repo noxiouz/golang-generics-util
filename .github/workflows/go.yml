@@ -13,4 +13,10 @@ jobs:
           stable: 'false'
           go-version: '^1.18.0-beta1'
       - name: Run tests
-        run: go test -v ./...
+        run: go test -v -race -covermode=atomic -coverprofile=coverage.out ./...
+      - uses: codecov/codecov-action@v2
+        with:
+          #files: ./coverage1.xml,./coverage2.xml # optional
+          flags: unittests # optional
+          name: go generics util library
+          verbose: true
