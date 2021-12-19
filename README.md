@@ -8,6 +8,7 @@ Utility library that explores Go generics (1.18)
 ## xsync
 
 + [Synchronized[T]](xsync/synchronized.go)
++ [Pool[T]](xsync/pool.go)
 
 ## collection
     
