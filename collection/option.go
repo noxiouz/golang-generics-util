@@ -44,3 +44,22 @@ func (s *someImpl[T]) HasValue() bool {
 func (s *someImpl[T]) Value() T {
 	return s.value
 }
+
+// Map applies a function to an optional value
+func Map[T any, U any](opt Option[T], fn func(T) U) Option[U] {
+	if !opt.HasValue() {
+		return None[U]()
+	}
+
+	return Some(fn(opt.Value()))
+}
+
+// FlatMap applies a function to an optional value. Similar to Map, but the function
+// returns an Option
+func FlatMap[T any, U any](opt Option[T], fn func(T) Option[U]) Option[U] {
+	if !opt.HasValue() {
+		return None[U]()
+	}
+
+	return fn(opt.Value())
+}

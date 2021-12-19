@@ -67,5 +67,82 @@ func TestSome(t *testing.T) {
 			t.Fatalf("Invalid zero value; wanted %v; got %v", want, val)
 		}
 	})
+}
 
+func TestMap(t *testing.T) {
+	t.Run("MapSome", func(t *testing.T) {
+		var data = "somedata"
+		var opt = Some(data)
+
+		optInt := Map(opt, func(v string) int {
+			return len(v)
+		})
+
+		if !optInt.HasValue() {
+			t.Fatal("Optional with Int should have a value")
+		}
+
+		if got := optInt.Value(); got != len(data) {
+			t.Fatalf("OptInt has an unexpected value; want %v, got %v", len(data), got)
+		}
+	})
+
+	t.Run("MapNone", func(t *testing.T) {
+		var opt = None[string]()
+
+		var called = 0
+		optInt := Map(opt, func(v string) int {
+			called += 1
+			return len(v)
+		})
+
+		if optInt.HasValue() {
+			t.Fatal("Optional with Int should not have a value")
+		}
+		if called != 0 {
+			t.Fatalf("Callback should have not been called")
+		}
+	})
+}
+
+func TestFlatMap(t *testing.T) {
+	t.Run("FlatMapSome", func(t *testing.T) {
+		var data = "somedata"
+		var opt = Some(data)
+
+		optInt := FlatMap(opt, func(v string) Option[int] {
+			return Some(len(v))
+		})
+		if !optInt.HasValue() {
+			t.Fatal("Optional with Int should have a value")
+		}
+		if got := optInt.Value(); got != len(data) {
+			t.Fatalf("OptInt has an unexpected value; want %v, got %v", len(data), got)
+		}
+
+		noneOptInt := FlatMap(opt, func(string) Option[int] {
+			return None[int]()
+		})
+
+		if noneOptInt.HasValue() {
+			t.Fatal("NoneOptional should not have a value")
+		}
+	})
+
+	t.Run("FlatMapNone", func(t *testing.T) {
+		var opt = None[string]()
+
+		var called = 0
+		optInt := FlatMap(opt, func(v string) Option[int] {
+			called += 1
+			return Some(len(v))
+		})
+
+		if optInt.HasValue() {
+			t.Fatal("Optional with Int should not have a value")
+		}
+		if called != 0 {
+			t.Fatalf("Callback should have not been called")
+		}
+	})
 }
